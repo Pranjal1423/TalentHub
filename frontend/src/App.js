@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Import pages
@@ -16,92 +18,114 @@ import PostJob from './pages/jobs/PostJob';
 import Dashboard from './pages/dashboard/Dashboard';
 import Applications from './pages/dashboard/Applications';
 import MyJobs from './pages/dashboard/MyJobs';
+import Profile from './pages/dashboard/Profile';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-gray-50">
-          <Routes>
-            {/* Routes with header */}
-            <Route path="/" element={
-              <>
-                <Header />
-                <main><Home /></main>
-              </>
-            } />
-            <Route path="/login" element={
-              <>
-                <Header />
-                <main><Login /></main>
-              </>
-            } />
-            <Route path="/register" element={
-              <>
-                <Header />
-                <main><Register /></main>
-              </>
-            } />
-            <Route path="/jobs" element={
-              <>
-                <Header />
-                <main><Jobs /></main>
-              </>
-            } />
-            <Route path="/jobs/:id" element={
-              <>
-                <Header />
-                <main><JobDetail /></main>
-              </>
-            } />
-            
-            {/* Protected routes with header */}
-            <Route path="/post-job" element={
-              <>
-                <Header />
-                <main>
-                  <ProtectedRoute requiredRole="employer">
-                    <PostJob />
-                  </ProtectedRoute>
-                </main>
-              </>
-            } />
-            
-            {/* Dashboard routes (no header - has its own layout) */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/applications" element={
-              <ProtectedRoute requiredRole="jobseeker">
-                <Applications />
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/jobs" element={
-              <ProtectedRoute requiredRole="employer">
-                <MyJobs />
-              </ProtectedRoute>
-            } />
-            
-            {/* 404 page */}
-            <Route path="*" element={
-              <>
-                <Header />
-                <main>
-                  <div className="min-h-screen flex items-center justify-center">
-                    <div className="text-center">
-                      <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-                      <p className="text-gray-600">Page not found</p>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50 flex flex-col">
+            <Routes>
+              {/* Routes with header and footer */}
+              <Route path="/" element={
+                <>
+                  <Header />
+                  <main className="flex-1"><Home /></main>
+                  <Footer />
+                </>
+              } />
+              <Route path="/login" element={
+                <>
+                  <Header />
+                  <main className="flex-1"><Login /></main>
+                </>
+              } />
+              <Route path="/register" element={
+                <>
+                  <Header />
+                  <main className="flex-1"><Register /></main>
+                </>
+              } />
+              <Route path="/jobs" element={
+                <>
+                  <Header />
+                  <main className="flex-1"><Jobs /></main>
+                  <Footer />
+                </>
+              } />
+              <Route path="/jobs/:id" element={
+                <>
+                  <Header />
+                  <main className="flex-1"><JobDetail /></main>
+                </>
+              } />
+              
+              {/* Protected routes with header */}
+              <Route path="/post-job" element={
+                <>
+                  <Header />
+                  <main className="flex-1">
+                    <ProtectedRoute requiredRole="employer">
+                      <PostJob />
+                    </ProtectedRoute>
+                  </main>
+                </>
+              } />
+              
+              {/* Dashboard routes (no header/footer - has its own layout) */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/applications" element={
+                <ProtectedRoute requiredRole="jobseeker">
+                  <Applications />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/jobs" element={
+                <ProtectedRoute requiredRole="employer">
+                  <MyJobs />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+              
+              {/* 404 page */}
+              <Route path="*" element={
+                <>
+                  <Header />
+                  <main className="flex-1">
+                    <div className="min-h-screen flex items-center justify-center">
+                      <div className="text-center">
+                        <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
+                        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Page Not Found</h2>
+                        <p className="text-gray-600 mb-8">
+                          The page you're looking for doesn't exist or has been moved.
+                        </p>
+                        <div className="space-x-4">
+                          <a href="/" className="btn-primary">
+                            Go Home
+                          </a>
+                          <a href="/jobs" className="btn-secondary">
+                            Browse Jobs
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </main>
-              </>
-            } />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+                  </main>
+                  <Footer />
+                </>
+              } />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
