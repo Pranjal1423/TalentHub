@@ -16,7 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', require('./routes/auth')); // Authentication routes
+app.use('/api/auth', require('./routes/auth'));    // Authentication routes
+app.use('/api/jobs', require('./routes/jobs'));    // Job management routes
 
 // Test route
 app.get('/', (req, res) => {
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
+      jobs: '/api/jobs',
       docs: 'Check README for API documentation'
     }
   });
@@ -37,7 +39,8 @@ app.get('/health', (req, res) => {
     status: 'OK', 
     timestamp: new Date().toISOString(),
     database: 'MongoDB Connected',
-    authentication: 'JWT System Active'
+    authentication: 'JWT System Active',
+    jobs: 'Job Management Active'
   });
 });
 
@@ -64,4 +67,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📍 Environment: ${process.env.NODE_ENV}`);
   console.log(`🔐 Authentication: JWT Active`);
+  console.log(`💼 Jobs: Management System Active`);
 });
