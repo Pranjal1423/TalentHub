@@ -402,3 +402,8 @@ TalentHub is a comprehensive job portal application that demonstrates full-stack
 - **Code Quality**: Clean, maintainable, and well-documented code
 
 This project serves as an excellent portfolio piece that demonstrates both technical skills and business understanding in creating a real-world application. 
+
+
+
+frontend - Vercel
+backend - railway

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://talent-hub-backend-ozgh.onrender.com/api';
 
 // Create axios instance with default config
 const api = axios.create({
