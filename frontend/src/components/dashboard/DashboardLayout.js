@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { 
   LayoutDashboard, Briefcase, FileText, Settings, 
-  Users, PlusCircle, BarChart3, Menu, X 
+  Users, PlusCircle, BarChart3, Menu, X, LogOut 
 } from 'lucide-react';
 
 const DashboardLayout = ({ children }) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const jobSeekerNavigation = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -87,20 +93,29 @@ const DashboardLayout = ({ children }) => {
           </div>
         </nav>
 
-        {/* User info */}
+        {/* User info and logout */}
         <div className="absolute bottom-0 w-full p-4 border-t border-gray-200">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                <span className="text-primary-600 font-medium text-sm">
-                  {user?.name?.charAt(0)?.toUpperCase()}
-                </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                  <span className="text-primary-600 font-medium text-sm">
+                    {user?.name?.charAt(0)?.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-700">{user?.name}</p>
+                <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
               </div>
             </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-700">{user?.name}</p>
-              <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
@@ -108,12 +123,19 @@ const DashboardLayout = ({ children }) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile header */}
-        <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-2">
+        <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-gray-500 hover:text-gray-700"
           >
             <Menu className="w-6 h-6" />
+          </button>
+          <button
+            onClick={handleLogout}
+            className="text-gray-500 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5" />
           </button>
         </div>
 

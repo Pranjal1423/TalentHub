@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { jobAPI } from '../../services/api';
 import Button from '../../components/forms/Button';
 import { 
-  MapPin, Clock, DollarSign, Building, Users, Calendar,
+  MapPin, Clock, IndianRupee, Building, Users, Calendar,
   ArrowLeft, ExternalLink, Briefcase, CheckCircle, AlertCircle
 } from 'lucide-react';
 
@@ -82,12 +82,12 @@ const JobDetail = () => {
   const formatSalary = (salary) => {
     if (!salary || (!salary.min && !salary.max)) return 'Salary not specified';
     
-    const min = salary.min ? `$${salary.min.toLocaleString()}` : '';
-    const max = salary.max ? `$${salary.max.toLocaleString()}` : '';
+    const min = salary.min ? `₹${salary.min.toLocaleString()}` : '';
+    const max = salary.max ? `₹${salary.max.toLocaleString()}` : '';
     
-    if (min && max) return `${min} - ${max} ${salary.currency || 'USD'}`;
-    if (min) return `From ${min} ${salary.currency || 'USD'}`;
-    if (max) return `Up to ${max} ${salary.currency || 'USD'}`;
+    if (min && max) return `${min} - ${max}`;
+    if (min) return `From ${min}`;
+    if (max) return `Up to ${max}`;
   };
 
   const getStatusColor = (status) => {
@@ -190,7 +190,7 @@ const JobDetail = () => {
                 </div>
                 
                 <div className="flex items-center text-gray-600">
-                  <DollarSign className="w-5 h-5 mr-2" />
+                  <IndianRupee className="w-5 h-5 mr-2" />
                   <span>{formatSalary(job.salary)}</span>
                 </div>
                 
@@ -288,7 +288,7 @@ const JobDetail = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Job Description</h2>
               <div className="prose prose-gray max-w-none">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words overflow-hidden">
                   {job.description}
                 </p>
               </div>
@@ -298,7 +298,7 @@ const JobDetail = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Requirements</h2>
               <div className="prose prose-gray max-w-none">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap break-words overflow-hidden">
                   {job.requirements}
                 </p>
               </div>

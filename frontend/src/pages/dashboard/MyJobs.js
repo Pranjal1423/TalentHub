@@ -5,7 +5,7 @@ import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import Button from '../../components/forms/Button';
 import { 
   Briefcase, Plus, Users, Eye, Edit, Trash2, 
-  Calendar, MapPin, DollarSign, MoreVertical 
+  Calendar, MapPin, IndianRupee, MoreVertical 
 } from 'lucide-react';
 
 const MyJobs = () => {
@@ -183,7 +183,7 @@ const MyJobs = () => {
                           </div>
                           
                           <div className="flex items-center">
-                            <DollarSign className="w-4 h-4 mr-2" />
+                            <IndianRupee className="w-4 h-4 mr-2" />
                             <span>{formatSalary(job.salary)}</span>
                           </div>
                           

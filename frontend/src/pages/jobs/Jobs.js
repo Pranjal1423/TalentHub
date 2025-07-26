@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { jobAPI } from '../../services/api';
 import JobCard from '../../components/jobs/JobCard';
 import SearchFilters from '../../components/jobs/SearchFilters';
+import AnimatedLoading from '../../components/common/AnimatedLoading';
 import Button from '../../components/forms/Button';
-import { ChevronLeft, ChevronRight, Briefcase } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Briefcase, Search, Filter } from 'lucide-react';
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -104,124 +106,196 @@ const Jobs = () => {
 
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <button
+        <motion.button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-2 text-sm font-medium rounded-md ${
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
             i === pagination.currentPage
-              ? 'bg-primary-600 text-white'
-              : 'text-gray-700 hover:bg-gray-100'
+              ? 'bg-primary-600 text-white shadow-lg'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'
           }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           {i}
-        </button>
+        </motion.button>
       );
     }
 
     return (
-      <div className="flex items-center justify-center space-x-2 mt-8">
-        <Button
-          variant="ghost"
-          onClick={() => handlePageChange(pagination.currentPage - 1)}
-          disabled={!pagination.hasPrevPage}
-          icon={ChevronLeft}
+      <div className="flex items-center justify-center space-x-3 mt-12">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          Previous
-        </Button>
+          <Button
+            variant="ghost"
+            onClick={() => handlePageChange(pagination.currentPage - 1)}
+            disabled={!pagination.hasPrevPage}
+            icon={ChevronLeft}
+            className="px-4 py-2"
+          >
+            Previous
+          </Button>
+        </motion.div>
         
-        <div className="flex space-x-1">
+        <div className="flex space-x-2">
           {pages}
         </div>
         
-        <Button
-          variant="ghost"
-          onClick={() => handlePageChange(pagination.currentPage + 1)}
-          disabled={!pagination.hasNextPage}
-          icon={ChevronRight}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          Next
-        </Button>
+          <Button
+            variant="ghost"
+            onClick={() => handlePageChange(pagination.currentPage + 1)}
+            disabled={!pagination.hasNextPage}
+            icon={ChevronRight}
+            className="px-4 py-2"
+          >
+            Next
+          </Button>
+        </motion.div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Find Your Next Job</h1>
-          <p className="text-gray-600">
+        <motion.div 
+          className="mb-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Find Your <span className="gradient-text">Next Job</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Discover {pagination.totalJobs} opportunities waiting for you
           </p>
-        </div>
+        </motion.div>
 
         {/* Search Filters */}
-        <SearchFilters
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onClearFilters={handleClearFilters}
-          onSearch={handleSearch}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <SearchFilters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
+            onSearch={handleSearch}
+          />
+        </motion.div>
 
         {/* Loading State */}
         {loading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <div className="py-16">
+            <AnimatedLoading 
+              size="large" 
+              text="Finding amazing jobs for you..." 
+            />
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-            <p className="text-red-800">{error}</p>
-            <Button
-              variant="ghost"
-              onClick={fetchJobs}
-              className="mt-2"
-            >
-              Try Again
-            </Button>
-          </div>
+          <motion.div 
+            className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                <Briefcase className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-red-800 mb-1">Oops! Something went wrong</h3>
+                <p className="text-red-700">{error}</p>
+              </div>
+            </div>
+            <motion.div className="mt-4">
+              <Button
+                variant="primary"
+                onClick={fetchJobs}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Try Again
+              </Button>
+            </motion.div>
+          </motion.div>
         )}
 
         {/* Job Results */}
         {!loading && !error && (
           <>
             {/* Results Summary */}
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-gray-600">
-                Showing {jobs.length} of {pagination.totalJobs} jobs
-                {filters.search && ` for "${filters.search}"`}
-              </p>
+            <motion.div 
+              className="flex items-center justify-between mb-8 p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="flex items-center">
+                <Search className="w-5 h-5 text-primary-600 mr-2" />
+                <p className="text-gray-700 font-medium">
+                  Showing <span className="text-primary-600 font-bold">{jobs.length}</span> of{' '}
+                  <span className="text-primary-600 font-bold">{pagination.totalJobs}</span> jobs
+                  {filters.search && (
+                    <span className="text-gray-600"> for "{filters.search}"</span>
+                  )}
+                </p>
+              </div>
               
               {jobs.length > 0 && (
-                <div className="text-sm text-gray-500">
+                <div className="flex items-center text-sm text-gray-500">
+                  <Filter className="w-4 h-4 mr-2" />
                   Page {pagination.currentPage} of {pagination.totalPages}
                 </div>
               )}
-            </div>
+            </motion.div>
 
             {/* Job Grid */}
             {jobs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {jobs.map((job) => (
-                  <JobCard key={job._id} job={job} />
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                {jobs.map((job, index) => (
+                  <JobCard key={job._id} job={job} index={index} />
                 ))}
-              </div>
+              </motion.div>
             ) : (
-              <div className="text-center py-12">
-                <Briefcase className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No jobs found</h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  Try adjusting your search criteria or clearing filters.
+              <motion.div 
+                className="text-center py-16"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Briefcase className="w-12 h-12 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">No jobs found</h3>
+                <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                  Try adjusting your search criteria or clearing filters to find more opportunities.
                 </p>
-                <div className="mt-6">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <Button variant="primary" onClick={handleClearFilters}>
                     Clear All Filters
                   </Button>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             )}
 
             {/* Pagination */}

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { jobAPI } from '../../services/api';
 import Input from '../../components/forms/Input';
 import Button from '../../components/forms/Button';
 import Select from '../../components/forms/Select';
-import { Briefcase, Building, MapPin, DollarSign, Users, Calendar } from 'lucide-react';
+import { Briefcase, Building, MapPin, IndianRupee, Users, Calendar, Plus } from 'lucide-react';
 
 const PostJob = () => {
   const { user } = useAuth();
@@ -146,7 +147,7 @@ const PostJob = () => {
         jobData.salary = {
           min: formData.salaryMin ? parseInt(formData.salaryMin) : null,
           max: formData.salaryMax ? parseInt(formData.salaryMax) : null,
-          currency: 'USD'
+          currency: 'INR'
         };
       }
 
@@ -162,29 +163,77 @@ const PostJob = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Post a New Job</h1>
-          <p className="text-gray-600">
+        <motion.div 
+          className="mb-8 text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h1 
+            variants={itemVariants}
+            className="text-4xl font-bold text-gray-900 mb-4"
+          >
+            Post a New Job
+          </motion.h1>
+          <motion.p 
+            variants={itemVariants}
+            className="text-xl text-gray-600 max-w-2xl mx-auto"
+          >
             Find the perfect candidate for your team by creating a detailed job posting.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Form */}
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <motion.div 
+          className="glass rounded-2xl shadow-xl p-8"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {errors.submit && (
-            <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-red-800">{errors.submit}</p>
-            </div>
+            <motion.div 
+              className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <p className="text-red-800 font-medium">{errors.submit}</p>
+            </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+            <motion.div 
+              className="border-b border-gray-200 pb-8"
+              variants={itemVariants}
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <Plus className="w-5 h-5 mr-2 text-primary-600" />
+                Basic Information
+              </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input
@@ -210,14 +259,14 @@ const PostJob = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <Input
                   label="Location"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
                   error={errors.location}
-                  placeholder="e.g. San Francisco, CA"
+                  placeholder="e.g. Mumbai, Maharashtra"
                   required
                   icon={MapPin}
                 />
@@ -232,11 +281,17 @@ const PostJob = () => {
                   required
                 />
               </div>
-            </div>
+            </motion.div>
 
             {/* Job Details */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Job Details</h2>
+            <motion.div 
+              className="border-b border-gray-200 pb-8"
+              variants={itemVariants}
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <Briefcase className="w-5 h-5 mr-2 text-primary-600" />
+                Job Details
+              </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Select
@@ -266,55 +321,83 @@ const PostJob = () => {
                     onChange={handleChange}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="remote" className="ml-2 text-sm text-gray-700">
+                  <label htmlFor="remote" className="ml-2 text-sm text-gray-700 font-medium">
                     Remote work available
                   </label>
                 </div>
               </div>
 
-              <Input
-                label="Required Skills"
-                name="skills"
-                value={formData.skills}
-                onChange={handleChange}
-                placeholder="React, Node.js, TypeScript (comma separated)"
-              />
-            </div>
-
-            {/* Salary */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Salary Range (Optional)</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="mt-6">
                 <Input
-                  label="Minimum Salary"
-                  name="salaryMin"
-                  type="number"
-                  value={formData.salaryMin}
+                  label="Required Skills"
+                  name="skills"
+                  value={formData.skills}
                   onChange={handleChange}
-                  error={errors.salaryMin}
-                  placeholder="50000"
-                  icon={DollarSign}
-                />
-                
-                <Input
-                  label="Maximum Salary"
-                  name="salaryMax"
-                  type="number"
-                  value={formData.salaryMax}
-                  onChange={handleChange}
-                  error={errors.salaryMax}
-                  placeholder="80000"
-                  icon={DollarSign}
+                  placeholder="React, Node.js, TypeScript (comma separated)"
                 />
               </div>
-            </div>
+            </motion.div>
+
+            {/* Salary */}
+            <motion.div 
+              className="border-b border-gray-200 pb-8"
+              variants={itemVariants}
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <IndianRupee className="w-5 h-5 mr-2 text-primary-600" />
+                Salary Range (Optional)
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="relative">
+                  <Input
+                    label="Minimum Salary (₹)"
+                    name="salaryMin"
+                    type="number"
+                    value={formData.salaryMin}
+                    onChange={handleChange}
+                    error={errors.salaryMin}
+                    placeholder="50000"
+                    className="pl-10"
+                  />
+                  <div className="absolute left-3 top-10 text-gray-500">
+                    <IndianRupee className="w-4 h-4" />
+                  </div>
+                </div>
+                
+                <div className="relative">
+                  <Input
+                    label="Maximum Salary (₹)"
+                    name="salaryMax"
+                    type="number"
+                    value={formData.salaryMax}
+                    onChange={handleChange}
+                    error={errors.salaryMax}
+                    placeholder="80000"
+                    className="pl-10"
+                  />
+                  <div className="absolute left-3 top-10 text-gray-500">
+                    <IndianRupee className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-4 text-sm text-gray-500 text-center">
+                💡 Salary amounts are in Indian Rupees (₹). Use numbers only (e.g., 50000 for ₹50,000)
+              </div>
+            </motion.div>
 
             {/* Description */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Job Description</h2>
+            <motion.div 
+              className="border-b border-gray-200 pb-8"
+              variants={itemVariants}
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <Users className="w-5 h-5 mr-2 text-primary-600" />
+                Job Description
+              </h2>
               
-              <div className="mb-4">
+              <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description <span className="text-red-500">*</span>
                 </label>
@@ -353,11 +436,17 @@ const PostJob = () => {
                   {formData.requirements.length}/50 characters minimum
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Application Deadline */}
-            <div className="pb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Application Deadline (Optional)</h2>
+            <motion.div 
+              className="pb-8"
+              variants={itemVariants}
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <Calendar className="w-5 h-5 mr-2 text-primary-600" />
+                Application Deadline (Optional)
+              </h2>
               
               <Input
                 label="Deadline"
@@ -368,10 +457,13 @@ const PostJob = () => {
                 error={errors.deadline}
                 icon={Calendar}
               />
-            </div>
+            </motion.div>
 
             {/* Submit Button */}
-            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+            <motion.div 
+              className="flex justify-end space-x-4 pt-8 border-t border-gray-200"
+              variants={itemVariants}
+            >
               <Button
                 type="button"
                 variant="ghost"
@@ -388,9 +480,9 @@ const PostJob = () => {
               >
                 Post Job
               </Button>
-            </div>
+            </motion.div>
           </form>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

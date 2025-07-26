@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import PageTitle from './components/common/PageTitle';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -19,12 +20,15 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Applications from './pages/dashboard/Applications';
 import MyJobs from './pages/dashboard/MyJobs';
 import Profile from './pages/dashboard/Profile';
+import Applicants from './pages/dashboard/Applicants';
+import Analytics from './pages/dashboard/Analytics';
 
 function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
         <Router>
+          <PageTitle />
           <div className="min-h-screen bg-gray-50 flex flex-col">
             <Routes>
               {/* Routes with header and footer */}
@@ -92,6 +96,16 @@ function App() {
               <Route path="/dashboard/profile" element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/applicants" element={
+                <ProtectedRoute requiredRole="employer">
+                  <Applicants />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/analytics" element={
+                <ProtectedRoute requiredRole="employer">
+                  <Analytics />
                 </ProtectedRoute>
               } />
               
