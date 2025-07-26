@@ -14,8 +14,8 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: [
-    'https://talent-rcplrdrsl-pranjal1423s-projects.vercel.app',
-    'https://talent-rcplrdrsl-pranjal1423s-projects.vercel.app/', // With trailing slash
+    'https://talent-5zgxqoy7j-pranjal1423s-projects.vercel.app',
+    'https://talent-5zgxqoy7j-pranjal1423s-projects.vercel.app/', // With trailing slash
     'http://localhost:3000', // For local development
     'http://localhost:3001'  // Alternative local port
   ],
