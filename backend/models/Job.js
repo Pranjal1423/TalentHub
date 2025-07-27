@@ -27,7 +27,7 @@ const jobSchema = new mongoose.Schema({
     max: Number,            // Maximum salary
     currency: {
       type: String,
-      default: 'USD'        // Default currency
+      default: 'INR'        // Default currency
     }
   },
   
