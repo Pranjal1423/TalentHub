@@ -12,36 +12,29 @@ connectDatabase();
 const app = express();
 
 // Middleware
+// Middleware
 app.use(cors({
-  origin: [
-    'https://talent-5zgxqoy7j-pranjal1423s-projects.vercel.app',
-    'https://talent-5zgxqoy7j-pranjal1423s-projects.vercel.app/', // With trailing slash
-    'http://localhost:3000', // For local development
-    'http://localhost:3001'  // Alternative local port
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'https://talent-5zgxqoy7j-pranjal1423s-projects.vercel.app',
+      'http://localhost:3000', // For local development
+      'http://localhost:3001',  // Alternative local port
+      process.env.CLIENT_URL    // This will be updated with your new Vercel URL
+    ];
+    
+    if (allowedOrigins.some(allowedOrigin => origin.startsWith(allowedOrigin.replace(/\/$/, '')))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
-
-// Routes
-app.use('/api/auth', require('./routes/auth'));    // Authentication routes
-app.use('/api/jobs', require('./routes/jobs'));    // Job management routes
-
-// Test route
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'TalentHub API is running!',
-    status: 'success',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      jobs: '/api/jobs',
-      docs: 'Check README for API documentation'
-    }
-  });
-});
 
 // Health check
 app.get('/health', (req, res) => {
