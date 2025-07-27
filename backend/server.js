@@ -18,13 +18,17 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      'https://talent-5zgxqoy7j-pranjal1423s-projects.vercel.app',
-      'http://localhost:3000', // For local development
-      'http://localhost:3001',  // Alternative local port
-      process.env.CLIENT_URL    // This will be updated with your new Vercel URL
+      'https://talenthub-frontend-mu.vercel.app',  // Your production frontend
+      'http://localhost:3000',                     // Local React dev server
+      'http://localhost:3001',                     // Alternative local port
+      'http://127.0.0.1:3000',                    // Alternative localhost
+      process.env.CLIENT_URL                       // Environment variable
     ];
     
-    if (allowedOrigins.some(allowedOrigin => origin.startsWith(allowedOrigin.replace(/\/$/, '')))) {
+    if (allowedOrigins.some(allowedOrigin => 
+      origin === allowedOrigin || 
+      origin?.startsWith(allowedOrigin.replace(/\/$/, ''))
+    )) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
