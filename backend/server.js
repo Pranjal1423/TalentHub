@@ -11,24 +11,28 @@ connectDatabase();
 
 const app = express();
 
-// Middleware
+
+// Middleware - Updated to handle multiple Vercel deployments
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or Postman)
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      'https://talenthub-frontend-mu.vercel.app',  // Your production frontend
-      'http://localhost:3000',                     // Local React dev server
-      'http://localhost:3001',                     // Alternative local port
-      'http://127.0.0.1:3000',                    // Alternative localhost
-      process.env.CLIENT_URL                       // Environment variable
+      'https://talenthub-frontend-mu.vercel.app',                              // Old URL
+      'https://talenthub-frontend-11n8b8cfx-pranjal1423s-projects.vercel.app', // New URL
+      'http://localhost:3000',                                                 // Local development
+      'http://localhost:3001',                                                 // Alternative local port
+      process.env.CLIENT_URL                                                   // Environment variable
     ];
     
-    if (allowedOrigins.some(allowedOrigin => 
-      origin === allowedOrigin || 
-      origin?.startsWith(allowedOrigin.replace(/\/$/, ''))
-    )) {
+    // Also allow any URL that starts with your Vercel project pattern
+    const isVercelDomain = origin && (
+      origin.includes('talenthub-frontend') && 
+      origin.includes('vercel.app')
+    );
+    
+    if (allowedOrigins.includes(origin) || isVercelDomain) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -36,11 +40,9 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
 }));
-
-app.use(express.json());
-
 // Routes - THIS WAS MISSING!
 app.use('/api/auth', require('./routes/auth'));    // Authentication routes
 app.use('/api/jobs', require('./routes/jobs'));    // Job management routes
