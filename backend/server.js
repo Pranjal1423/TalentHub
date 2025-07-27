@@ -12,7 +12,6 @@ connectDatabase();
 const app = express();
 
 // Middleware
-// Middleware
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or Postman)
@@ -36,6 +35,26 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+app.use(express.json());
+
+// Routes - THIS WAS MISSING!
+app.use('/api/auth', require('./routes/auth'));    // Authentication routes
+app.use('/api/jobs', require('./routes/jobs'));    // Job management routes
+
+// Test route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'TalentHub API is running!',
+    status: 'success',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      jobs: '/api/jobs',
+      docs: 'Check README for API documentation'
+    }
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ 
@@ -47,7 +66,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// 404 handler
+// 404 handler - MUST BE LAST!
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
